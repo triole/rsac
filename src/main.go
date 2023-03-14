@@ -14,7 +14,6 @@ func main() {
 	})
 
 	bpc := bpc.Init(CLI.Config, lg)
-
 	bpc.Run()
 
 }

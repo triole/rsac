@@ -2,11 +2,14 @@ package bpc
 
 import (
 	"backup_period_checker/src/logging"
+	"os"
+	"time"
 
 	str2duration "github.com/xhit/go-str2duration/v2"
 )
 
 type Bpc struct {
+	Now  time.Time
 	Conf tConf
 	Lg   logging.Logging
 }
@@ -15,7 +18,8 @@ func Init(configFile string, lg logging.Logging) (bpc Bpc) {
 	bpc = Bpc{Lg: lg}
 	conf := bpc.readTomlFile(configFile)
 
-	bpc.Conf.ResticBackupFolder = conf.ResticBackupFolder
+	bpc.Now = bpc.now()
+	bpc.Conf.ResticBackupFolder = os.ExpandEnv(conf.ResticBackupFolder)
 	bpc.Conf.DefaultMaxDiff = conf.DefaultMaxDiff
 
 	for _, el := range conf.MaxDiffs {

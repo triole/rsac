@@ -26,13 +26,16 @@ func (bpc Bpc) filterFileList(fileList []string, isDir bool) (fis tFileInfos) {
 			"error": err,
 			"path":  pth,
 		})
-		if inf.IsDir() == isDir {
-			newFileInfo := tFileInfo{
+		newFileInfo := tFileInfo{Path: pth}
+		if !inf.IsDir() && !isDir {
+			newFileInfo = tFileInfo{
 				Path:        pth,
 				LastMod:     inf.ModTime(),
 				LastModUnix: inf.ModTime().Unix(),
 				Age:         bpc.Now.Sub(inf.ModTime()),
 			}
+		}
+		if inf.IsDir() == isDir {
 			fis = append(fis, newFileInfo)
 		}
 		bpc.Lg.IfErrError("root is not a folder", logging.F{"error": err})

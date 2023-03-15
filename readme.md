@@ -1,4 +1,4 @@
-# Restic Snapshot Age Checker ![example workflow](https://github.com/triole/rsac/actions/workflows/build.yaml/badge.svg)
+# Restic Snapshot Age Checker ![build](https://github.com/triole/rsac/actions/workflows/build.yaml/badge.svg)
 
 <!--- mdtoc: toc begin -->
 

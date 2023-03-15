@@ -88,13 +88,18 @@ func (bpc Bpc) visit(files *[]string, rx string) filepath.WalkFunc {
 }
 
 func (bpc Bpc) find(root string, rx string) (files []string) {
-	lnk, _ := os.Readlink(root)
+	lnk, err := os.Readlink(root)
+	bpc.Lg.IfErrFatal(
+		"failed to check if root is symlink",
+		logging.F{"error": err},
+	)
 	if lnk != "" {
 		root = lnk
 	}
-	err := filepath.Walk(root, bpc.visit(&files, rx))
-	if err != nil {
-		panic(err)
-	}
+	err = filepath.Walk(root, bpc.visit(&files, rx))
+	bpc.Lg.IfErrFatal(
+		"unable to detect files",
+		logging.F{"error": err},
+	)
 	return
 }

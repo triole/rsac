@@ -1,11 +1,11 @@
-package bpc
+package rsac
 
 import (
-	"backup_period_checker/src/logging"
+	"rsac/src/logging"
 	"time"
 )
 
-type Bpc struct {
+type Rsac struct {
 	Now  time.Time
 	Conf tConf
 	Lg   logging.Logging

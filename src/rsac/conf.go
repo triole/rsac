@@ -1,9 +1,9 @@
-package bpc
+package rsac
 
 import (
-	"backup_period_checker/src/logging"
 	"fmt"
 	"os"
+	"rsac/src/logging"
 	"time"
 
 	"github.com/pelletier/go-toml"
@@ -22,32 +22,32 @@ type tDiff struct {
 	Dur     time.Duration
 }
 
-func (bpc *Bpc) readTomlFile(filename string) (conf tConf) {
-	content, err := os.ReadFile(bpc.resolvePath(filename))
-	bpc.Lg.IfErrFatal("can not read file", logging.F{
+func (rsac *Rsac) readTomlFile(filename string) (conf tConf) {
+	content, err := os.ReadFile(rsac.resolvePath(filename))
+	rsac.Lg.IfErrFatal("can not read file", logging.F{
 		"error": err,
 		"file":  filename,
 	})
 	err = toml.Unmarshal(content, &conf)
-	bpc.Lg.IfErrFatal("unable to decode toml", logging.F{
+	rsac.Lg.IfErrFatal("unable to decode toml", logging.F{
 		"error": err,
 	})
 
-	bpc.Conf.ResticBackupFolder = conf.ResticBackupFolder
+	rsac.Conf.ResticBackupFolder = conf.ResticBackupFolder
 
 	// assemble max diff list, add tolerance to durations
 	for _, el := range conf.MaxDiffs {
 		if el.Str != "" {
-			dur, err := bpc.str2dur(el.Str)
+			dur, err := rsac.str2dur(el.Str)
 			if err == nil {
 				newEl := el
-				newEl.Dur = bpc.addDurationTolerance(dur)
-				bpc.Conf.MaxDiffs = append(
-					bpc.Conf.MaxDiffs, newEl,
+				newEl.Dur = rsac.addDurationTolerance(dur)
+				rsac.Conf.MaxDiffs = append(
+					rsac.Conf.MaxDiffs, newEl,
 				)
 			}
 		}
 	}
-	bpc.Lg.Debug("applied configuration", logging.F{"config": fmt.Sprintf("%+v", bpc.Conf)})
+	rsac.Lg.Debug("applied configuration", logging.F{"config": fmt.Sprintf("%+v", rsac.Conf)})
 	return
 }

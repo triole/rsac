@@ -1,4 +1,4 @@
-module backup_period_checker
+module rsac
 
 go 1.20
 

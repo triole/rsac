@@ -1,8 +1,8 @@
 package main
 
 import (
-	"backup_period_checker/src/bpc"
-	"backup_period_checker/src/logging"
+	"rsac/src/logging"
+	"rsac/src/rsac"
 )
 
 func main() {
@@ -13,8 +13,8 @@ func main() {
 		"config": CLI.Config,
 	})
 
-	bpc := bpc.Init(CLI.Config, lg)
-	err := bpc.RunCheck()
+	rsac := rsac.Init(CLI.Config, lg)
+	err := rsac.RunCheck()
 
 	lg.IfErrError("check failed", logging.F{"error": err})
 	if err == nil {

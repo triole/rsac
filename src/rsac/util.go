@@ -1,14 +1,14 @@
-package bpc
+package rsac
 
 import (
-	"backup_period_checker/src/logging"
 	"regexp"
+	"rsac/src/logging"
 	"time"
 
 	"github.com/xhit/go-str2duration/v2"
 )
 
-func (bpc Bpc) now() time.Time {
+func (rsac Rsac) now() time.Time {
 	return time.Now()
 }
 
@@ -18,14 +18,14 @@ func rxMatch(rx string, str string) (b bool) {
 	return
 }
 
-func (bpc Bpc) str2dur(s string) (dur time.Duration, err error) {
+func (rsac Rsac) str2dur(s string) (dur time.Duration, err error) {
 	dur, err = str2duration.ParseDuration(s)
-	bpc.Lg.IfErrError("can not parse string to duration",
+	rsac.Lg.IfErrError("can not parse string to duration",
 		logging.F{"error": err},
 	)
 	return
 }
 
-func (bpc Bpc) addDurationTolerance(dur time.Duration) time.Duration {
+func (rsac Rsac) addDurationTolerance(dur time.Duration) time.Duration {
 	return dur + time.Duration(time.Minute*30)
 }

@@ -18,6 +18,6 @@ func main() {
 
 	lg.IfErrError("check failed", logging.F{"error": err})
 	if err == nil {
-		lg.Debug("all snapshots up to date", nil)
+		lg.Debug("all snapshots are up to date", nil)
 	}
 }

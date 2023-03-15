@@ -26,7 +26,7 @@ type tDiff struct {
 }
 
 func (bpc *Bpc) readTomlFile(filename string) (conf tConf) {
-	content, err := os.ReadFile(filename)
+	content, err := os.ReadFile(bpc.resolvePath(filename))
 	bpc.Lg.IfErrFatal("can not read file", logging.F{
 		"error": err,
 		"file":  filename,
@@ -61,6 +61,6 @@ func (bpc *Bpc) readTomlFile(filename string) (conf tConf) {
 			}
 		}
 	}
-	bpc.Lg.Info("apply configuration", logging.F{"config": fmt.Sprintf("%+v", bpc.Conf)})
+	bpc.Lg.Debug("apply configuration", logging.F{"config": fmt.Sprintf("%+v", bpc.Conf)})
 	return
 }

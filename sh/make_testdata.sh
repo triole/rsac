@@ -15,3 +15,6 @@ for u in {00..03}; do
         done
     done
 done
+
+ln -s "${tempdir}/testdata" "${tempdir}/testdata_sl"
+ln -s "${tempdir}/broken_sl_target" "${tempdir}/testdata_sl_broken"

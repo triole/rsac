@@ -14,3 +14,9 @@ func Init(configFile string, lg logging.Logging) (bpc Bpc) {
 
 	return
 }
+
+func InitForTesting() (bpc Bpc) {
+	lg := logging.Init("debug", "/dev/stdout", true, false)
+	bpc.Lg = lg
+	return
+}

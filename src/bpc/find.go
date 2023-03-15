@@ -3,7 +3,6 @@ package bpc
 import (
 	"backup_period_checker/src/logging"
 	"log"
-	"olibs/rx"
 	"os"
 	"path/filepath"
 	"sort"
@@ -68,7 +67,7 @@ func (bpc Bpc) filterFileList(fileList []string, isDir bool) (fis tFileInfos) {
 func (bpc Bpc) getMaxDiffEntry(path string) (dur time.Duration) {
 	dur = bpc.Conf.MaxDiffs.Default.Dur
 	for _, el := range bpc.Conf.MaxDiffs.Specific {
-		if rx.Match(el.Matcher, path) {
+		if rxMatch(el.Matcher, path) {
 			return el.Dur
 		}
 	}
@@ -88,15 +87,8 @@ func (bpc Bpc) visit(files *[]string, rx string) filepath.WalkFunc {
 }
 
 func (bpc Bpc) find(root string, rx string) (files []string) {
-	lnk, err := os.Readlink(root)
-	bpc.Lg.IfErrFatal(
-		"failed to check if root is symlink",
-		logging.F{"error": err},
-	)
-	if lnk != "" {
-		root = lnk
-	}
-	err = filepath.Walk(root, bpc.visit(&files, rx))
+	root = bpc.resolvePath(root)
+	var err error = filepath.Walk(root, bpc.visit(&files, rx))
 	bpc.Lg.IfErrFatal(
 		"unable to detect files",
 		logging.F{"error": err},

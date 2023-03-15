@@ -24,7 +24,10 @@ func (bpc Bpc) RunCheck() (err error) {
 
 func (bpc Bpc) makeSnapInfo(msg string, fi tFileInfo) (string, logging.F) {
 	return msg, logging.F{
-		"age": bpc.roundDuration(fi.Age), "max_diff": fi.MaxDiff, "path": fi.Path,
+		"age":      bpc.roundDuration(fi.Age),
+		"max_diff": fi.MaxDiff,
+		"matcher":  fi.Matcher,
+		"path":     fi.Path,
 	}
 }
 

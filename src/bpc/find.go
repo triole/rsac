@@ -22,7 +22,6 @@ func (bpc Bpc) findLatestSnapshots() (latestSnapshots tFileInfos) {
 		if len(filesInFolder) > 0 {
 			latestSnapshots = append(latestSnapshots, filesInFolder[0])
 		}
-
 	}
 	return
 }
@@ -48,12 +47,14 @@ func (bpc Bpc) filterFileList(fileList []string, isDir bool) (fis tFileInfos) {
 		})
 		newFileInfo := tFileInfo{Path: pth}
 		if !inf.IsDir() && !isDir {
+			maxDiff, matcher := bpc.getMaxDiffEntry(pth)
 			newFileInfo = tFileInfo{
 				Path:        pth,
 				LastMod:     inf.ModTime(),
 				LastModUnix: inf.ModTime().Unix(),
 				Age:         bpc.Now.Sub(inf.ModTime()),
-				MaxDiff:     bpc.getMaxDiffEntry(pth),
+				MaxDiff:     maxDiff,
+				Matcher:     matcher,
 			}
 		}
 		if inf.IsDir() == isDir {
@@ -64,11 +65,10 @@ func (bpc Bpc) filterFileList(fileList []string, isDir bool) (fis tFileInfos) {
 	return
 }
 
-func (bpc Bpc) getMaxDiffEntry(path string) (dur time.Duration) {
-	dur = bpc.Conf.MaxDiffs.Default.Dur
-	for _, el := range bpc.Conf.MaxDiffs.Specific {
+func (bpc Bpc) getMaxDiffEntry(path string) (dur time.Duration, matcher string) {
+	for _, el := range bpc.Conf.MaxDiffs {
 		if rxMatch(el.Matcher, path) {
-			return el.Dur
+			return el.Dur, el.Matcher
 		}
 	}
 	return

@@ -14,10 +14,7 @@ type tConf struct {
 	MaxDiffs           tDiffs `toml:"max_diffs"`
 }
 
-type tDiffs struct {
-	Default  tDiff `toml:"default_duration"`
-	Specific []tDiff
-}
+type tDiffs []tDiff
 
 type tDiff struct {
 	Matcher string `toml:"matcher"`
@@ -38,29 +35,19 @@ func (bpc *Bpc) readTomlFile(filename string) (conf tConf) {
 
 	bpc.Conf.ResticBackupFolder = conf.ResticBackupFolder
 
-	// parse default duration string
-	defaultDur, err := bpc.str2dur(conf.MaxDiffs.Default.Str)
-	bpc.Lg.IfErrFatal(
-		"no default duration specified",
-		logging.F{"config": filename, "error": err},
-	)
-	if err == nil {
-		bpc.Conf.MaxDiffs.Default.Dur = bpc.addDurationTolerance(defaultDur)
-	}
-
-	// assemble specific duration list, add 30m tolerance to durations
-	for _, el := range conf.MaxDiffs.Specific {
+	// assemble max diff list, add tolerance to durations
+	for _, el := range conf.MaxDiffs {
 		if el.Str != "" {
 			dur, err := bpc.str2dur(el.Str)
 			if err == nil {
 				newEl := el
 				newEl.Dur = bpc.addDurationTolerance(dur)
-				bpc.Conf.MaxDiffs.Specific = append(
-					bpc.Conf.MaxDiffs.Specific, newEl,
+				bpc.Conf.MaxDiffs = append(
+					bpc.Conf.MaxDiffs, newEl,
 				)
 			}
 		}
 	}
-	bpc.Lg.Debug("apply configuration", logging.F{"config": fmt.Sprintf("%+v", bpc.Conf)})
+	bpc.Lg.Debug("applied configuration", logging.F{"config": fmt.Sprintf("%+v", bpc.Conf)})
 	return
 }

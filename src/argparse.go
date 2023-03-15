@@ -14,8 +14,8 @@ import (
 var (
 	// BUILDTAGS are injected ld flags during build
 	BUILDTAGS      string
-	appName        = "backup period checker"
-	appDescription = "checks if restic backups are up to date"
+	appName        = "restic snapshot age checker"
+	appDescription = "checks if latest restic snapshots are up to date"
 	appMainversion = "0.1"
 )
 

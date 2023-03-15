@@ -17,6 +17,7 @@ type tFileInfo struct {
 	LastModUnix int64
 	Age         time.Duration
 	MaxDiff     time.Duration
+	Matcher     string
 }
 
 type tFileInfos []tFileInfo

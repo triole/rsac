@@ -9,7 +9,7 @@ func main() {
 	parseArgs()
 
 	lg := logging.Init(CLI.LogLevel, CLI.LogFile, CLI.LogNoColors, CLI.LogJSON)
-	lg.Info("Init backup period checker", logging.F{
+	lg.Debug("init "+appName, logging.F{
 		"config": CLI.Config,
 	})
 
@@ -17,4 +17,7 @@ func main() {
 	err := bpc.RunCheck()
 
 	lg.IfErrError("check failed", logging.F{"error": err})
+	if err == nil {
+		lg.Debug("all snapshots up to date", nil)
+	}
 }

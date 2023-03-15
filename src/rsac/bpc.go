@@ -13,7 +13,7 @@ func (rsac Rsac) RunCheck() (err error) {
 	errCounter := 0
 	for _, el := range latestSnapshots {
 		if el.MaxDiff > 0 {
-			if el.Age <= el.MaxDiff {
+			if el.Age <= el.MaxDiff+(el.MaxDiff/40) {
 				rsac.Lg.Info(rsac.makeSnapInfo("up to date", el))
 			} else {
 				rsac.Lg.Warn(rsac.makeSnapInfo("outdated", el))

@@ -25,7 +25,3 @@ func (rsac Rsac) str2dur(s string) (dur time.Duration, err error) {
 	)
 	return
 }
-
-func (rsac Rsac) addDurationTolerance(dur time.Duration) time.Duration {
-	return dur + time.Duration(time.Minute*30)
-}

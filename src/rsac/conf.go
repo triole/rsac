@@ -41,7 +41,7 @@ func (rsac *Rsac) readTomlFile(filename string) (conf tConf) {
 			dur, err := rsac.str2dur(el.Str)
 			if err == nil {
 				newEl := el
-				newEl.Dur = rsac.addDurationTolerance(dur)
+				newEl.Dur = dur
 				rsac.Conf.MaxDiffs = append(
 					rsac.Conf.MaxDiffs, newEl,
 				)

@@ -3,7 +3,6 @@ package bpc
 import (
 	"backup_period_checker/src/logging"
 	"fmt"
-	"olibs/rx"
 	"os"
 	"time"
 
@@ -26,7 +25,7 @@ type tDiff struct {
 	Dur     time.Duration
 }
 
-func (bpc Bpc) readTomlFile(filename string) (conf tConf) {
+func (bpc *Bpc) readTomlFile(filename string) (conf tConf) {
 	content, err := os.ReadFile(filename)
 	bpc.Lg.IfErrFatal("can not read file", logging.F{
 		"error": err,
@@ -63,17 +62,5 @@ func (bpc Bpc) readTomlFile(filename string) (conf tConf) {
 		}
 	}
 	bpc.Lg.Info("apply configuration", logging.F{"config": fmt.Sprintf("%+v", bpc.Conf)})
-	return
-}
-
-// TODO: continue here
-func (bpc Bpc) getMaxDiffEntry(path string) (dur time.Duration) {
-	dur = bpc.Conf.MaxDiffs.Default.Dur
-	for _, el := range bpc.Conf.MaxDiffs.Specific {
-		if rx.Match(el.Matcher, path) {
-			fmt.Printf("%q\n", "HAHA")
-			return el.Dur
-		}
-	}
 	return
 }

@@ -3,9 +3,30 @@ package bpc
 import (
 	"backup_period_checker/src/logging"
 	"log"
+	"olibs/rx"
 	"os"
 	"path/filepath"
+	"sort"
+	"time"
 )
+
+func (bpc Bpc) findLatestSnapshots() (latestSnapshots tFileInfos) {
+	snapshotFolders := bpc.findFolders(
+		bpc.Conf.ResticBackupFolder, "/snapshots$",
+	)
+
+	for _, val := range snapshotFolders {
+		filesInFolder := bpc.findFiles(
+			val.Path, ".*",
+		)
+		sort.Sort(filesInFolder)
+		if len(filesInFolder) > 0 {
+			latestSnapshots = append(latestSnapshots, filesInFolder[0])
+		}
+
+	}
+	return
+}
 
 func (bpc Bpc) findFiles(root, rx string) (fis tFileInfos) {
 	fileList := bpc.find(root, rx)
@@ -40,6 +61,16 @@ func (bpc Bpc) filterFileList(fileList []string, isDir bool) (fis tFileInfos) {
 			fis = append(fis, newFileInfo)
 		}
 		bpc.Lg.IfErrError("root is not a folder", logging.F{"error": err})
+	}
+	return
+}
+
+func (bpc Bpc) getMaxDiffEntry(path string) (dur time.Duration) {
+	dur = bpc.Conf.MaxDiffs.Default.Dur
+	for _, el := range bpc.Conf.MaxDiffs.Specific {
+		if rx.Match(el.Matcher, path) {
+			return el.Dur
+		}
 	}
 	return
 }

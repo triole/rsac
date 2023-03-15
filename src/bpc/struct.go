@@ -1,6 +1,15 @@
 package bpc
 
-import "time"
+import (
+	"backup_period_checker/src/logging"
+	"time"
+)
+
+type Bpc struct {
+	Now  time.Time
+	Conf tConf
+	Lg   logging.Logging
+}
 
 type tFileInfo struct {
 	Path        string

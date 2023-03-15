@@ -14,6 +14,7 @@ func main() {
 	})
 
 	bpc := bpc.Init(CLI.Config, lg)
-	bpc.Run()
+	err := bpc.RunCheck()
 
+	lg.IfErrError("check failed", logging.F{"error": err})
 }

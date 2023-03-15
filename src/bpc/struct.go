@@ -7,6 +7,7 @@ type tFileInfo struct {
 	LastMod     time.Time
 	LastModUnix int64
 	Age         time.Duration
+	MaxDiff     time.Duration
 }
 
 type tFileInfos []tFileInfo

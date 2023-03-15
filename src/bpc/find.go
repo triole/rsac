@@ -33,6 +33,7 @@ func (bpc Bpc) filterFileList(fileList []string, isDir bool) (fis tFileInfos) {
 				LastMod:     inf.ModTime(),
 				LastModUnix: inf.ModTime().Unix(),
 				Age:         bpc.Now.Sub(inf.ModTime()),
+				MaxDiff:     bpc.getMaxDiffEntry(pth),
 			}
 		}
 		if inf.IsDir() == isDir {

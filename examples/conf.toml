@@ -1,15 +1,17 @@
 restic_backup_folder = "${HOME}/rolling/golang/projects/backup_period_checker/tmp"
-default_max_diff = "1d"
 
-# specific_max_diffs
-[[smds]]
+[max_diffs]
+[max_diffs.default_duration]
+duration = "1d"
+
+[[max_diffs.specific]]
 matcher = "/user001/"
-max_diff = "111d"
+duration = "111d"
 
-[[smds]]
+[[max_diffs.specific]]
 matcher = "/user002/"
-max_diff = "3d"
+duration = "3d"
 
-[[smds]]
+[[max_diffs.specific]]
 matcher = "/user003/repo3"
-max_diff = "3d"
+duration = "3d"

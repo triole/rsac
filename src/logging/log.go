@@ -8,6 +8,10 @@ func (lg Logging) Info(msg string, fields interface{}) {
 	lg.Logrus.WithFields(lg.conv(fields)).Info(msg)
 }
 
+func (lg Logging) Warn(msg string, fields interface{}) {
+	lg.Logrus.WithFields(lg.conv(fields)).Warn(msg)
+}
+
 func (lg Logging) Error(msg interface{}, fields interface{}) {
 	lg.Logrus.WithFields(lg.conv(fields)).Error(msg)
 }

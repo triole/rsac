@@ -2,6 +2,8 @@ package bpc
 
 import (
 	"backup_period_checker/src/logging"
+	"fmt"
+	"olibs/rx"
 	"os"
 	"time"
 
@@ -10,25 +12,68 @@ import (
 
 type tConf struct {
 	ResticBackupFolder string `toml:"restic_backup_folder"`
-	DefaultMaxDiff     string `toml:"default_max_diff"`
-	MaxDiffs           []tSmd `toml:"smds"`
+	MaxDiffs           tDiffs `toml:"max_diffs"`
 }
 
-type tSmd struct {
-	Matcher    string `toml:"matcher"`
-	MaxDiffStr string `toml:"max_diff"`
-	Duration   time.Duration
+type tDiffs struct {
+	Default  tDiff `toml:"default_duration"`
+	Specific []tDiff
+}
+
+type tDiff struct {
+	Matcher string `toml:"matcher"`
+	Str     string `toml:"duration"`
+	Dur     time.Duration
 }
 
 func (bpc Bpc) readTomlFile(filename string) (conf tConf) {
 	content, err := os.ReadFile(filename)
-	bpc.Lg.IfErrFatal("Can not read file", logging.F{
+	bpc.Lg.IfErrFatal("can not read file", logging.F{
 		"error": err,
 		"file":  filename,
 	})
 	err = toml.Unmarshal(content, &conf)
-	bpc.Lg.IfErrFatal("Unable to decode toml", logging.F{
+	bpc.Lg.IfErrFatal("unable to decode toml", logging.F{
 		"error": err,
 	})
+
+	bpc.Conf.ResticBackupFolder = conf.ResticBackupFolder
+
+	// parse default duration string
+	defaultDur, err := bpc.str2dur(conf.MaxDiffs.Default.Str)
+	bpc.Lg.IfErrFatal(
+		"no default duration specified",
+		logging.F{"config": filename, "error": err},
+	)
+	if err == nil {
+		bpc.Conf.MaxDiffs.Default.Dur = bpc.addDurationTolerance(defaultDur)
+	}
+
+	// assemble specific duration list, add 30m tolerance to durations
+	for _, el := range conf.MaxDiffs.Specific {
+		if el.Str != "" {
+			dur, err := bpc.str2dur(el.Str)
+			if err == nil {
+				newEl := el
+				newEl.Dur = bpc.addDurationTolerance(dur)
+				bpc.Conf.MaxDiffs.Specific = append(
+					bpc.Conf.MaxDiffs.Specific, newEl,
+				)
+			}
+		}
+	}
+	bpc.Lg.Info("apply configuration", logging.F{"config": fmt.Sprintf("%+v", bpc.Conf)})
+	return
+}
+
+// TODO: continue here
+func (bpc Bpc) getMaxDiffEntry(path string) (dur time.Duration) {
+	dur = bpc.Conf.MaxDiffs.Default.Dur
+	for _, el := range bpc.Conf.MaxDiffs.Specific {
+		if rx.Match(el.Matcher, path) {
+			fmt.Printf("%q\n", "HAHA")
+			return el.Dur
+		}
+	}
 	return
 }

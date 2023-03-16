@@ -22,7 +22,28 @@ type Logging struct {
 }
 
 // Init method, does what it says
-func Init(loglevel, logFile string, nocolours, JSONLog bool) (lg Logging) {
+// loglevel, logFile string, nocolours, JSONLog bool
+func Init(itf ...interface{}) (lg Logging) {
+	logLevel := "info"
+	if len(itf) > 0 {
+		logLevel = itf[0].(string)
+	}
+
+	logFile := "/dev/stdout"
+	if len(itf) > 1 {
+		logFile = itf[1].(string)
+	}
+
+	noColours := false
+	if len(itf) > 2 {
+		noColours = itf[2].(bool)
+	}
+
+	JSONLog := false
+	if len(itf) > 3 {
+		JSONLog = itf[3].(bool)
+	}
+
 	timeStampFormat := "2006-01-02 15:04:05.000 MST"
 	lg.Logrus = logrus.New()
 
@@ -45,7 +66,7 @@ func Init(loglevel, logFile string, nocolours, JSONLog bool) (lg Logging) {
 			PadLevelText:    true,
 			ForceColors:     true,
 		}
-		if nocolours {
+		if noColours {
 			form.ForceColors = false
 			form.DisableColors = true
 		}
@@ -67,7 +88,7 @@ func Init(loglevel, logFile string, nocolours, JSONLog bool) (lg Logging) {
 
 		lg.Logrus.SetOutput(openLogFile)
 	}
-	lg.setLevel(loglevel)
+	lg.setLevel(logLevel)
 
 	return lg
 }

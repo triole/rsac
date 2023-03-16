@@ -4,9 +4,10 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"rsac/src/logging"
 	"sort"
 	"time"
+
+	"github.com/triole/logseal"
 )
 
 func (rsac Rsac) findLatestSnapshots() (latestSnapshots tFileInfos) {
@@ -41,7 +42,7 @@ func (rsac Rsac) findFolders(root, rx string) (fis tFileInfos) {
 func (rsac Rsac) filterFileList(fileList []string, isDir bool) (fis tFileInfos) {
 	for _, pth := range fileList {
 		inf, err := os.Stat(pth)
-		rsac.Lg.IfErrError("failed to stat file", logging.F{
+		rsac.Lg.IfErrError("failed to stat file", logseal.F{
 			"error": err,
 			"path":  pth,
 		})
@@ -60,7 +61,7 @@ func (rsac Rsac) filterFileList(fileList []string, isDir bool) (fis tFileInfos) 
 		if inf.IsDir() == isDir {
 			fis = append(fis, newFileInfo)
 		}
-		rsac.Lg.IfErrError("root is not a folder", logging.F{"error": err})
+		rsac.Lg.IfErrError("root is not a folder", logseal.F{"error": err})
 	}
 	return
 }
@@ -91,7 +92,7 @@ func (rsac Rsac) find(root string, rx string) (files []string) {
 	var err error = filepath.Walk(root, rsac.visit(&files, rx))
 	rsac.Lg.IfErrFatal(
 		"unable to detect files",
-		logging.F{"error": err},
+		logseal.F{"error": err},
 	)
 	return
 }

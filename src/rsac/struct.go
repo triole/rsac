@@ -1,14 +1,15 @@
 package rsac
 
 import (
-	"rsac/src/logging"
 	"time"
+
+	"github.com/triole/logseal"
 )
 
 type Rsac struct {
 	Now  time.Time
 	Conf tConf
-	Lg   logging.Logging
+	Lg   logseal.Logseal
 }
 
 type tFileInfo struct {

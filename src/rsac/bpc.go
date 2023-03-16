@@ -2,10 +2,11 @@ package rsac
 
 import (
 	"errors"
-	"rsac/src/logging"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/triole/logseal"
 )
 
 func (rsac Rsac) RunCheck() (err error) {
@@ -27,8 +28,8 @@ func (rsac Rsac) RunCheck() (err error) {
 	return
 }
 
-func (rsac Rsac) makeSnapInfo(msg string, fi tFileInfo) (string, logging.F) {
-	fields := logging.F{
+func (rsac Rsac) makeSnapInfo(msg string, fi tFileInfo) (string, logseal.F) {
+	fields := logseal.F{
 		"age":  rsac.roundDuration(fi.Age),
 		"path": fi.Path,
 	}

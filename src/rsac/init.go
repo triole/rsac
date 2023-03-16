@@ -2,10 +2,11 @@ package rsac
 
 import (
 	"os"
-	"rsac/src/logging"
+
+	"github.com/triole/logseal"
 )
 
-func Init(configFile string, lg logging.Logging) (rsac Rsac) {
+func Init(configFile string, lg logseal.Logseal) (rsac Rsac) {
 	rsac = Rsac{Lg: lg}
 	conf := rsac.readTomlFile(configFile)
 
@@ -16,7 +17,7 @@ func Init(configFile string, lg logging.Logging) (rsac Rsac) {
 }
 
 func InitForTesting() (rsac Rsac) {
-	lg := logging.Init("debug", "/dev/stdout", true, false)
+	lg := logseal.Init("debug", nil, true, false)
 	rsac.Lg = lg
 	return
 }

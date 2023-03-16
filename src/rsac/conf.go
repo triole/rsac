@@ -3,8 +3,9 @@ package rsac
 import (
 	"fmt"
 	"os"
-	"rsac/src/logging"
 	"time"
+
+	"github.com/triole/logseal"
 
 	"github.com/pelletier/go-toml"
 )
@@ -24,12 +25,12 @@ type tDiff struct {
 
 func (rsac *Rsac) readTomlFile(filename string) (conf tConf) {
 	content, err := os.ReadFile(rsac.resolvePath(filename))
-	rsac.Lg.IfErrFatal("can not read file", logging.F{
+	rsac.Lg.IfErrFatal("can not read file", logseal.F{
 		"error": err,
 		"file":  filename,
 	})
 	err = toml.Unmarshal(content, &conf)
-	rsac.Lg.IfErrFatal("unable to decode toml", logging.F{
+	rsac.Lg.IfErrFatal("unable to decode toml", logseal.F{
 		"error": err,
 	})
 
@@ -48,6 +49,6 @@ func (rsac *Rsac) readTomlFile(filename string) (conf tConf) {
 			}
 		}
 	}
-	rsac.Lg.Debug("applied configuration", logging.F{"config": fmt.Sprintf("%+v", rsac.Conf)})
+	rsac.Lg.Debug("applied configuration", logseal.F{"config": fmt.Sprintf("%+v", rsac.Conf)})
 	return
 }

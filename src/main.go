@@ -1,14 +1,16 @@
 package main
 
 import (
-	"rsac/src/logging"
+	"fut_clicker/logging"
 	"rsac/src/rsac"
+
+	"github.com/triole/logseal"
 )
 
 func main() {
 	parseArgs()
 
-	lg := logging.Init(CLI.LogLevel, CLI.LogFile, CLI.LogNoColors, CLI.LogJSON)
+	lg := logseal.Init(CLI.LogLevel, CLI.LogFile, CLI.LogNoColors, CLI.LogJSON)
 	lg.Debug("init "+appName, logging.F{
 		"config": CLI.Config,
 	})

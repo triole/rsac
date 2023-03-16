@@ -2,9 +2,9 @@ package rsac
 
 import (
 	"regexp"
-	"rsac/src/logging"
 	"time"
 
+	"github.com/triole/logseal"
 	"github.com/xhit/go-str2duration/v2"
 )
 
@@ -21,7 +21,7 @@ func rxMatch(rx string, str string) (b bool) {
 func (rsac Rsac) str2dur(s string) (dur time.Duration, err error) {
 	dur, err = str2duration.ParseDuration(s)
 	rsac.Lg.IfErrError("can not parse string to duration",
-		logging.F{"error": err},
+		logseal.F{"error": err},
 	)
 	return
 }

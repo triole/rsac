@@ -3,18 +3,19 @@ package rsac
 import (
 	"os"
 	"path/filepath"
-	"rsac/src/logging"
+
+	"github.com/triole/logseal"
 )
 
 func (rsac Rsac) resolvePath(path string) (r string) {
 	r = rsac.abs(path)
 	if rsac.isSymLink(r) {
 		lnk, err := os.Readlink(r)
-		rsac.Lg.IfErrError("failed to resolve symlink", logging.F{"error": err})
+		rsac.Lg.IfErrError("failed to resolve symlink", logseal.F{"error": err})
 		if err == nil {
 			rsac.Lg.Debug(
 				"resolve symlink",
-				logging.F{
+				logseal.F{
 					"source": r,
 					"target": lnk,
 				},
@@ -28,7 +29,7 @@ func (rsac Rsac) resolvePath(path string) (r string) {
 func (rsac Rsac) abs(path string) (r string) {
 	var err error
 	r, err = filepath.Abs(path)
-	rsac.Lg.IfErrError("unable to construct absolute path", logging.F{"error": err})
+	rsac.Lg.IfErrError("unable to construct absolute path", logseal.F{"error": err})
 	return r
 }
 

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"fut_clicker/logging"
+	"os"
 	"rsac/src/rsac"
 
 	"github.com/triole/logseal"
@@ -11,15 +11,19 @@ func main() {
 	parseArgs()
 
 	lg := logseal.Init(CLI.LogLevel, CLI.LogFile, CLI.LogNoColors, CLI.LogJSON)
-	lg.Debug("init "+appName, logging.F{
+	lg.Debug("init "+appName, logseal.F{
 		"config": CLI.Config,
 	})
 
 	rsac := rsac.Init(CLI.Config, lg)
-	err := rsac.RunCheck()
+	err, errCounter := rsac.RunCheck()
 
-	lg.IfErrError("check failed", logging.F{"error": err})
-	if err == nil {
+	if errCounter == 0 && err == nil {
 		lg.Debug("all snapshots are up to date", nil)
+	} else {
+		lg.IfErrError("check failed, snapshots outdated",
+			logseal.F{"error": err},
+		)
+		os.Exit(1)
 	}
 }

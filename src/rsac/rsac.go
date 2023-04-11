@@ -9,9 +9,10 @@ import (
 	"github.com/triole/logseal"
 )
 
-func (rsac Rsac) RunCheck() (err error) {
+func (rsac Rsac) RunCheck() (err error, errCounter int) {
 	latestSnapshots := rsac.findLatestSnapshots()
-	errCounter := 0
+	errCounter = 0
+	s := "snapshot exceeds"
 	for _, el := range latestSnapshots {
 		if el.MaxDiff > 0 {
 			if el.Age <= el.MaxDiff+(el.MaxDiff/40) {
@@ -19,7 +20,12 @@ func (rsac Rsac) RunCheck() (err error) {
 			} else {
 				rsac.Lg.Warn(rsac.makeSnapInfo("outdated", el))
 				errCounter += 1
-				err = errors.New(strconv.Itoa(errCounter) + " snapshots exceed their expected maximum age")
+				if errCounter > 1 {
+					s = "snapshots exceed"
+				}
+				err = errors.New(
+					strconv.Itoa(errCounter) + " " + s + " maximum age",
+				)
 			}
 		} else {
 			rsac.Lg.Debug(rsac.makeSnapInfo("skip, no matcher did apply", el))

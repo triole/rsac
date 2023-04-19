@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"path/filepath"
 	"regexp"
 	"strconv"
 	"strings"
@@ -20,12 +19,12 @@ var (
 )
 
 var CLI struct {
-	Config      string `help:"config file path" arg optional`
-	LogFile     string `help:"log file" short:l default:/dev/stdout`
-	LogLevel    string `help:"log level" short:e default:info enum:"debug,info,error"`
-	LogNoColors bool   `help:"disable output colours, print plain text" short:n`
-	LogJSON     bool   `help:"enable json log, instead of text one" short:j`
-	VersionFlag bool   `help:"display version" short:V`
+	Config      string `help:"config file path" arg:"" optional:""`
+	LogFile     string `help:"log file" short:"l" default:"/dev/stdout"`
+	LogLevel    string `help:"log level" short:"e" default:"info" enum:"debug,info,error"`
+	LogNoColors bool   `help:"disable output colours, print plain text" short:"n"`
+	LogJSON     bool   `help:"enable json log, instead of text one" short:"j"`
+	VersionFlag bool   `help:"display version" short:"V"`
 }
 
 func parseArgs() {
@@ -43,7 +42,7 @@ func parseArgs() {
 	)
 	_ = ctx.Run()
 
-	if CLI.VersionFlag == true {
+	if CLI.VersionFlag {
 		printBuildTags(BUILDTAGS)
 		os.Exit(0)
 	}
@@ -83,11 +82,11 @@ func printBuildTags(buildtags string) {
 	fmt.Printf("\n")
 }
 
-func getBindir() (s string) {
-	ex, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
-	s = filepath.Dir(ex)
-	return
-}
+// func getBindir() (s string) {
+// 	ex, err := os.Executable()
+// 	if err != nil {
+// 		panic(err)
+// 	}
+// 	s = filepath.Dir(ex)
+// 	return
+// }
